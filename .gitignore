@@ -1,0 +1,9 @@
+.idea/
+lib/**/*.js
+dist
+*.d.ts
+src/*.js
+test/*.js
+node_modules
+*.tgz
+package
