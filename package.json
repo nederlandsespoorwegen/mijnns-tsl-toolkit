@@ -11,6 +11,9 @@
     "type": "git",
     "url": "https://github.com/nederlandsespoorwegen/mijnns-tsl-toolkit.git"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
