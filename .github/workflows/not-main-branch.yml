@@ -1,0 +1,20 @@
+# On any branch but main, build the project and run tests
+name: Build & Test
+
+on: 
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - nuses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
