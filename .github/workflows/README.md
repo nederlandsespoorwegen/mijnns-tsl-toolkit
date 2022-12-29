@@ -1,8 +1,8 @@
 # Workflows, CICD strategy
 The following outlines this project's GitHub Actions workflows and the CICD strategy we want to follow.
 
-## Feature branches and Pull Requests
-`not-main-branch.yml`
+## Feature branches, main branch and Pull Requests
+`all-branches.yml`
 
 These will run a workflow that builds and tests the code.
 
