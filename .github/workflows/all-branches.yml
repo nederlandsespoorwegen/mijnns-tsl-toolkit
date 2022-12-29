@@ -1,10 +1,7 @@
-# On any branch but main, build the project and run tests
+# Build the project and run tests
 name: Build & Test
 
-on: 
-  push:
-    branches-ignore:
-      - main
+on: push
 
 jobs:
   build-test:

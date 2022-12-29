@@ -3,7 +3,7 @@ name: Build, Test, Tag & Release
 
 on: 
   push:
-    branches-ignore:
+    branches:
       - main
 
 jobs:

@@ -1,4 +1,7 @@
 # Mijn NS TSL toolkit
+![build status](https://github.com/nederlandsespoorwegen/mijnns-tsl-toolkit/actions/workflows/all-branches.yml/badge.svg?branch=main)
+![npm package](https://img.shields.io/npm/v/@nederlandsespoorwegen/mijnns-tsl-toolkit)
+
 This toolkit is a set of Typescript decorators and a handler wrapper that removes lots of boilerplate from vanilla Typescript Lambda (TSL) projects.
 
 When to use?
