@@ -1,0 +1,16 @@
+# On the main branch, make a tag based on the version in package.json
+name: Tag
+
+on: 
+  push:
+    branches:
+      - cicd-setup
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: Klemensas/action-autotag@stable
+      with:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
