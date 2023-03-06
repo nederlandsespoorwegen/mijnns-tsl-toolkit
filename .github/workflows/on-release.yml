@@ -30,4 +30,4 @@ jobs:
       - run: npm ci
       - run: npm publish
         env:
-          NODE_AUTH_TOKEN: "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" # Temp token, expires friday 29/12
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_MIJNNS_TSL_TOOLKIT_GITHUB_TOKEN }}
