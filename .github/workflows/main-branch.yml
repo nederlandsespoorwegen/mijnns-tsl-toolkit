@@ -4,7 +4,7 @@ name: Build, Test, Tag & Release
 on: 
   push:
     branches:
-      - main
+      - cicd-setup
 
 jobs:
   build-test:
