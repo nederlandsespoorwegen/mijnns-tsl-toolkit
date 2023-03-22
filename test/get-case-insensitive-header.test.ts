@@ -1,6 +1,6 @@
 import { getCaseInsensitiveHeader } from '../src';
 
-describe('ns-lambda-kit get case insensitive header test', () => {
+describe('get case insensitive header test', () => {
     it('should return the matched header', async () => {
         const event = {
             headers: {

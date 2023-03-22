@@ -15,7 +15,7 @@ beforeAll(() => {
     process.env.LAMBDA_TASK_ROOT = '/';
 });
 
-describe('ns-lambda-kit params test', () => {
+describe('params test', () => {
     it('should properly pass path and query params', async () => {
         const handler = lambdaEntry(TestLambda);
         const event = JSON.parse(`{

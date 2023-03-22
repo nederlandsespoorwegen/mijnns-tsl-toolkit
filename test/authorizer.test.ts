@@ -13,7 +13,7 @@ beforeAll(() => {
     process.env.LAMBDA_TASK_ROOT = '/';
 });
 
-describe('ns-lambda-kit authorizer test', () => {
+describe('authorizer test', () => {
     it('should properly pass the authorizer when present', async () => {
         const handler = lambdaEntry(TestLambda);
         const event = JSON.parse(`{
