@@ -34,7 +34,7 @@ beforeAll(() => {
     process.env.LAMBDA_TASK_ROOT = '/';
 });
 
-describe('ns-lambda-kit error test', () => {
+describe('error test', () => {
     it('should properly handle a caught error', async () => {
         const handler = lambdaEntry(TestLambda);
         const event = JSON.parse(`{

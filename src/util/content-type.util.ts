@@ -17,7 +17,7 @@ export function extractMediaType(contentType: string): string | undefined {
     }
 }
 
-export function contentTypeIsSupported(supported: SupportedContentTypes, target: string | undefined): boolean {
+export function isSupportedContentType(supported: SupportedContentTypes, target: string | undefined): boolean {
     return supported.some(value => {
         if (value == undefined) {
             return target == undefined;
@@ -26,10 +26,10 @@ export function contentTypeIsSupported(supported: SupportedContentTypes, target:
     });
 }
 
-export function shouldParseEventBody(parseJson: ParseJsonOptions = ['application/json', undefined], contentType: string | undefined): boolean {
+export function shouldJsonParseEventBody(parseJson: ParseJsonOptions = ['application/json', undefined], contentType: string | undefined): boolean {
     if (typeof parseJson === 'boolean') {
         return parseJson;
     }
 
-    return contentTypeIsSupported(parseJson as SupportedContentTypes, contentType);
+    return isSupportedContentType(parseJson as SupportedContentTypes, contentType);
 }

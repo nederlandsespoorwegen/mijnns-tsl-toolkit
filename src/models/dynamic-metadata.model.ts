@@ -11,7 +11,7 @@ export interface RequestBodyProps {
     contentType?: SupportedContentTypes
 }
 
-interface MemberProps {
+export interface MemberProps {
     requestBodyProps?: RequestBodyProps;
     eventIndex?: number;
     contextIndex?: number;

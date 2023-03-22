@@ -39,7 +39,7 @@ beforeAll(() => {
     process.env.LAMBDA_TASK_ROOT = '/';
 });
 
-describe('ns-lambda-kit logger test', () => {
+describe('logger test', () => {
     it('should call the setAwsRequest() method of the custom logger and handle its errors', async () => {
         const handler = lambdaEntry(TestLambda);
         const event = JSON.parse(`{ "hello": "world" }`);

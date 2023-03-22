@@ -79,7 +79,7 @@ beforeAll(() => {
     process.env.LAMBDA_TASK_ROOT = '/';
 });
 
-describe('ns-lambda-kit requestBody test', () => {
+describe('requestBody test', () => {
 
     const reqBody = {
         string: 'Hello there!',
