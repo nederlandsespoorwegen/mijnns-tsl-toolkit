@@ -79,7 +79,7 @@ beforeAll(() => {
     process.env.LAMBDA_TASK_ROOT = '/';
 });
 
-describe('ns-lambda-kit requestBody test', () => {
+describe('requestBody test', () => {
 
     const reqBody = {
         string: 'Hello there!',
@@ -96,6 +96,7 @@ describe('ns-lambda-kit requestBody test', () => {
         { reqBody, lambda: Default, contentType: 'text/plain',                              expectedBody: { type: 'string', body: JSON.stringify(reqBody) } },
         { reqBody, lambda: Default, contentType: undefined,                                 expectedBody: { type: 'object', body: reqBody } },
         { reqBody, lambda: Default, contentType: 'application/json',                        expectedBody: { type: 'object', body: reqBody } },
+        { reqBody, lambda: Default, contentType: 'application/json; charset=UTF-8',         expectedBody: { type: 'object', body: reqBody } },
         { reqBody, lambda: DontParseJson, contentType: 'application/json',                  expectedBody: { type: 'string', body: JSON.stringify(reqBody) } },
         { reqBody, lambda: DoParseJson, contentType: 'text/plain',                          expectedBody: { type: 'object', body: reqBody } },
         { reqBody, lambda: JsonMatcher, contentType: 'application/json',                    expectedBody: { type: 'object', body: reqBody } },

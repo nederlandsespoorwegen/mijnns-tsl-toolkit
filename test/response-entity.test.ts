@@ -21,7 +21,7 @@ beforeAll(() => {
     process.env.LAMBDA_TASK_ROOT = '/';
 });
 
-describe('ns-lambda-kit response entity test', () => {
+describe('response entity test', () => {
     it('should properly do a happy flow', async () => {
         const handler = lambdaEntry(TestLambda);
         const event = JSON.parse(`{}`);

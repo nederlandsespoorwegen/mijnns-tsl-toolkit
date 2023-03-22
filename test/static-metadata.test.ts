@@ -15,7 +15,7 @@ beforeAll(() => {
     process.env.LAMBDA_TASK_ROOT = '/';
 });
 
-describe('ns-lambda-kit static metadata test', () => {
+describe('static metadata test', () => {
     it('should properly fetch the metadata', async () => {
         const metadata = StaticMetadata.get(TestLambda);
 

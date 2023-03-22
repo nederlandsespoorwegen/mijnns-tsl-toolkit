@@ -1,12 +1,10 @@
-import {APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult, Context} from 'aws-lambda';
-import {consoleAwsLogger} from './console-aws-logger';
-import {ErrorManager} from './error-handler';
-import {CustomError} from './errors/custom.error';
-import {UnreadableRequestBodyError} from './errors/unreadable-request-body.error';
-import {UnsupportedMediaTypeError} from './errors/unsupported-media-type.error';
-import {DynamicMetadata, ParseJsonOptions, SupportedContentTypes} from './models';
-import {isValidResponseEntity, toApiGatewayProxyResult} from './models/response-entity.model';
-import {toLowerCaseKeys} from './util/case-insensitive-lookup.util';
+import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult, Context } from 'aws-lambda';
+import { consoleAwsLogger } from './console-aws-logger';
+import { ErrorManager } from './error-handler';
+import { CustomError } from './errors/custom.error';
+import { DynamicMetadata } from './models';
+import { isValidResponseEntity, toApiGatewayProxyResult } from './models/response-entity.model';
+import { getParameters } from './util/parameter-injection.util';
 
 const errorManager = new ErrorManager();
 let logger = consoleAwsLogger;
@@ -14,11 +12,6 @@ let logger = consoleAwsLogger;
 interface DynamicHandler {
     instance: any
     handlerName: string
-}
-
-interface Param {
-    index: number;
-    value: any;
 }
 
 export function lambdaEntry<T>(LambdaClass: new () => T): APIGatewayProxyHandler {
@@ -113,119 +106,6 @@ function tryCallingDynamicInitializer(metadata: DynamicMetadata, instance: any) 
 }
 
 
-
-/**
- * Return a list of values that will be injected into the implementation's handler function with a spread operator.
- * Meaning the returned list shall match the handler's signature length and types as much as possible.
- *
- * The given metadata contains "index" properties (@see MemberProps), which tell us what request parameters
- * the implementing handler wants to have injected, and on which parameter index they want them.
- *
- * (ex: [requestBodyIndex: 1] means the request body should be the 2nd element in this return value)
- * In the above example, if nothing is specified to go on index 0, that element will be null.
- *
- * This function first gathers all requested parameters in no particular order, then builds the list with each
- * parameter on the correct index.
- */
-function getParameters(metadata: DynamicMetadata, event: APIGatewayProxyEvent, context: Context) {
-    const handlerProps = metadata.members != null ? metadata.members![metadata.handler!] : null;
-    if (handlerProps != null) {
-        let params = [] as Param[];
-        const lowercaseHeaders = toLowerCaseKeys(event.headers || {});
-
-        if (handlerProps.requestHeaderIndexes != null) {
-
-            params = params.concat(Object.keys(handlerProps.requestHeaderIndexes!).map((h) => ({
-                index: handlerProps.requestHeaderIndexes![h],
-                value: lowercaseHeaders[h.toLowerCase()],
-            })));
-        }
-
-        if (handlerProps.pathParamIndexes != null) {
-            params = params.concat(Object.keys(handlerProps.pathParamIndexes!).map((p) => ({
-                index: handlerProps.pathParamIndexes![p],
-                value: (event.pathParameters || {})[p],
-            })));
-        }
-
-        if (handlerProps.queryParamIndexes != null) {
-            params = params.concat(Object.keys(handlerProps.queryParamIndexes!).map((p) => ({
-                index: handlerProps.queryParamIndexes![p],
-                value: (event.queryStringParameters || {})[p],
-            })));
-        }
-
-        const requestBodyProps = handlerProps.requestBodyProps;
-        if (requestBodyProps != null) {
-            const contentType = lowercaseHeaders['content-type'];
-
-            if (requestBodyProps.contentType) {
-                if (!contentTypeIsSupported(requestBodyProps.contentType, contentType)) {
-                    throw new UnsupportedMediaTypeError(requestBodyProps.contentType);
-                }
-            }
-
-            const index = requestBodyProps.index;
-            if (event.body != null) {
-                if (shouldParseEventBody(requestBodyProps.parseJson, contentType)) {
-                    params.push({ index, value: parseEventBody(event.body) });
-                } else {
-                    params.push({ index, value: event.body });
-                }
-            } else {
-                params.push({ index, value: undefined });
-            }
-        }
-
-        if (handlerProps.authorizerIndex != null) {
-            if (event.requestContext != null && event.requestContext.authorizer != null) {
-                params.push({ index: handlerProps.authorizerIndex, value: event.requestContext.authorizer });
-            } else {
-                params.push({ index: handlerProps.authorizerIndex, value: undefined });
-            }
-        }
-
-        if (handlerProps.eventIndex != null) {
-            params.push({ index: handlerProps.eventIndex, value: event });
-        }
-        if (handlerProps.contextIndex != null) {
-            params.push({ index: handlerProps.contextIndex, value: context });
-        }
-
-        const maxIndex = Math.max(...params.map((p) => p.index));
-        const returnValue = [];
-        for (let i = 0; i <= maxIndex; i++) {
-            const match = params.find((p) => p.index === i);
-            if (match) {
-                returnValue.push(match.value);
-            } else {
-                returnValue.push(null);
-            }
-        }
-
-        return returnValue;
-    } else {
-        return [];
-    }
-}
-
-function contentTypeIsSupported(contentTypes: SupportedContentTypes, contentType: string): boolean {
-    return contentTypes.some(value => {
-        if (value == undefined) {
-            return contentType == undefined
-        }
-        return value === contentType;
-    });
-}
-
-function shouldParseEventBody(parseJson: ParseJsonOptions = [ 'application/json', undefined ], contentType: string): boolean {
-    if (typeof parseJson === 'boolean') {
-        return parseJson
-    }
-
-    return contentTypeIsSupported(parseJson as SupportedContentTypes, contentType);
-}
-
 /**
  * This function will be called for any error thrown after a request comes in, but before the dynamic handler is called,
  * for example while trying to parse the request body.
@@ -259,25 +139,6 @@ function handleRequestError(err: any): APIGatewayProxyResult {
 function handleInitializationError(message: string): never {
     logger.error(message);
     throw new Error(message);
-}
-
-function isJsonContentType(contentType?: string): boolean {
-    return contentType === null || contentType !== 'text/plain';
-}
-
-function parseEventBody(body: any): any {
-    if (body == null) {
-        return null;
-    } else if (typeof body === 'string') {
-        try {
-            return JSON.parse(body);
-        } catch (err) {
-            logger.warn('Failed to JSON.parse a request body: ', err);
-            throw new UnreadableRequestBodyError();
-        }
-    } else {
-        return body;
-    }
 }
 
 function isRunningOnAws() {

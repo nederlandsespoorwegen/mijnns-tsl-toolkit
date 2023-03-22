@@ -46,16 +46,16 @@ public handle(@requestBody body: any) {
 #### Parsing request body as JSON
 By default, the request body will be parsed as JSON if the request `Content-Type` header is not present, or is set to `application/json`.
 
-To control the behaviour of parsing the request body, an optional property `parseJSON` can be passed to the `@requestBody` decorator:
+To control the behaviour of parsing the request body, an optional property `parseJson` can be passed to the `@requestBody` decorator:
 ```typescript
 @handle
-public handle(@requestBody({parseJSON: true}) body: any){
+public handle(@requestBody({ parseJson: true }) body: any){
     return body;
 }
 ```
-The `parseJSON` property can be either `boolean | string | (string | undefined)[]`, supporting the following behaviour:
+The `parseJson` property can be either `boolean | string | (string | undefined)[]`, supporting the following behaviour:
 
-* `boolean`: parse as JSON, if `parseJSON === true`.
+* `boolean`: parse as JSON, if `parseJson === true`.
 * `string`: parse as JSON, if the request `Content-Type` header is equal to the `string`.
 * `(string | undefined)[]`: parse as JSON if the request `Content-Type` header matches any of the items in the array, 
   following the same rules for a `string` as above. Additionally, the array can contain `undefined` items, indicating that the request body should be parsed as well when the request `Content-Type` header is not present.  
@@ -73,7 +73,7 @@ This will parse any request body for which the request `Content-Type` header
 ##### Supported content types
 The `@requestBody` decorator can be augmented with a check on supported content types.
   The property for this is `contentType`. The `contentType` property can be either
-  `string | (string | undefined)[]`, following the same behaviour as the `parseJSON` property.
+  `string | (string | undefined)[]`, following the same behaviour as the `parseJson` property.
 
 For example:
 ```typescript
