@@ -3,14 +3,14 @@ import { consoleAwsLogger } from './console-aws-logger';
 import { AwsLogger, ResponseEntity, toApiGatewayProxyResult } from './models';
 
 export type Predicate = (input: any) => boolean;
-export type ResponseProvider = (input: any) => ResponseEntity<any>;
+export type ResponseProvider = (input: any) => ResponseEntity;
 export type ErrorCatcher = (test: Predicate, provider: ResponseProvider) => void;
 export type ErrorHandler = (on: ErrorCatcher) => void;
 
 export class ErrorManager {
 
     private currentThrownError?: any;
-    private currentErrorResponse?: ResponseEntity<any>;
+    private currentErrorResponse?: ResponseEntity;
     private dynamicErrorHandler?: ErrorHandler;
     private logger: AwsLogger = consoleAwsLogger;
 
