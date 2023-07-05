@@ -1,7 +1,6 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
 import { consoleAwsLogger } from './console-aws-logger';
-import { AwsLogger } from './models/aws-logger.model';
-import { ResponseEntity, toApiGatewayProxyResult } from './models/response-entity.model';
+import { AwsLogger, ResponseEntity, toApiGatewayProxyResult } from './models';
 
 export type Predicate = (input: any) => boolean;
 export type ResponseProvider = (input: any) => ResponseEntity;
@@ -44,8 +43,8 @@ export class ErrorManager {
     }
 
     private buildDefaultResponse(): APIGatewayProxyResult {
-        return { 
-            statusCode: 500, 
+        return {
+            statusCode: 500,
             body: 'An unexpected error occurred',
             headers: { 'Content-Type': 'text/plain' }
         };

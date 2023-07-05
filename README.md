@@ -166,7 +166,7 @@ For complete control on what status code, body and headers are sent, return a `R
 export class MyFunction {
   
   @handle
-  public async handle(): Promise<ResponseEntity> {
+  public async handle(): Promise<ResponseEntity<{  message: string }>> {
     return {
       statusCode: 201,
       body: { message: 'Created' },
@@ -177,6 +177,7 @@ export class MyFunction {
   }
 }
 ```
+if omitted, the generic type of ResponseEntity will default to `any`, i.e. `ResponseEntity` is equal to `ResponseEntity<any>`.
 
 ### Custom logging libraries
 The `lambdaEntry()` wrapper itself will also do some logging, for example when errors are thrown by the handler method. This uses the `console` object by default, but can be overwritten:
