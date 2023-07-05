@@ -166,7 +166,7 @@ For complete control on what status code, body and headers are sent, return a `R
 export class MyFunction {
   
   @handle
-  public async handle(): Promise<ResponseEntity> {
+  public async handle(): Promise<ResponseEntity<{  message: string }>> {
     return {
       statusCode: 201,
       body: { message: 'Created' },
