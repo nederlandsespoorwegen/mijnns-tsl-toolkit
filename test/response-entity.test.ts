@@ -1,10 +1,14 @@
 import { handle, ResponseEntity, lambdaEntry } from '../src';
 import { APIGatewayProxyResult, Callback, Context } from 'aws-lambda';
 
+interface MessageBody {
+    message: string
+}
+
 export class TestLambda {
 
     @handle
-    public handle(): ResponseEntity {
+    public handle(): ResponseEntity<MessageBody> {
         return {
             statusCode: 429,
             body: {

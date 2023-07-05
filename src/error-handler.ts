@@ -1,17 +1,16 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
 import { consoleAwsLogger } from './console-aws-logger';
-import { AwsLogger } from './models/aws-logger.model';
-import { ResponseEntity, toApiGatewayProxyResult } from './models/response-entity.model';
+import { AwsLogger, ResponseEntity, toApiGatewayProxyResult } from './models';
 
 export type Predicate = (input: any) => boolean;
-export type ResponseProvider = (input: any) => ResponseEntity;
+export type ResponseProvider = (input: any) => ResponseEntity<any>;
 export type ErrorCatcher = (test: Predicate, provider: ResponseProvider) => void;
 export type ErrorHandler = (on: ErrorCatcher) => void;
 
 export class ErrorManager {
 
     private currentThrownError?: any;
-    private currentErrorResponse?: ResponseEntity;
+    private currentErrorResponse?: ResponseEntity<any>;
     private dynamicErrorHandler?: ErrorHandler;
     private logger: AwsLogger = consoleAwsLogger;
 
@@ -44,8 +43,8 @@ export class ErrorManager {
     }
 
     private buildDefaultResponse(): APIGatewayProxyResult {
-        return { 
-            statusCode: 500, 
+        return {
+            statusCode: 500,
             body: 'An unexpected error occurred',
             headers: { 'Content-Type': 'text/plain' }
         };

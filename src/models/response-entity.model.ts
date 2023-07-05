@@ -1,12 +1,12 @@
 import { APIGatewayProxyResult } from "aws-lambda";
 
-export interface ResponseEntity {
+export interface ResponseEntity<T> {
     statusCode: number;
-    body: any;
+    body: T;
     headers?: { [header: string]: string };
 }
 
-export function toApiGatewayProxyResult(responseEntity: ResponseEntity): APIGatewayProxyResult {
+export function toApiGatewayProxyResult(responseEntity: ResponseEntity<unknown>): APIGatewayProxyResult {
     const returnValue = {
         statusCode: responseEntity.statusCode,
         headers: responseEntity.headers || {}
